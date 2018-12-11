@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-%matplotlib inline
+%%matplotlib inline
 movies_df = pd.read_csv('ml-1m/movies.dat',sep='::', header = None)
 ratings_df = pd.read_csv('ml-1m/ratings.dat',sep='::', header = None)
 movies_df.columns = ['MovieID', 'Title', 'Genres']

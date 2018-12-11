@@ -1,12 +1,18 @@
 
 from flask import Flask, render_template, url_for, request
+
 import tensorflow as tf
 import numpy as np
 import pandas as pd
 
+
+
 app = Flask(__name__)
 @app.route('/')
 def index():
+    return render_template('index.html')
+@app.route('/signout')
+def signout():
     return render_template('index.html')
 
 @app.route('/predict', methods = ['POST'])
@@ -89,7 +95,7 @@ def predict():
     if request.method == 'POST':
         comment = request.form['comment']
         data = [comment]
-        dic = {"Shekhar": 50, "Shamant": 10, "Jim": 60, "Jackie Chan": 40, "Sunny Leone" : 20}
+        dic = {"Shekhar": 50, "Shamant": 10, "Jim": 60, "Jackie Chan": 40, "Sunny" : 20}
         for k,v in dic.items():
             if comment == k:
                 inputUser = [trX[v]]
@@ -102,7 +108,10 @@ def predict():
                 # List the 20 most recommended movies for our mock user by sorting it by their scores given by our model.
                 scored_movies_df_50 = movies_df
                 scored_movies_df_50["Recommendation Score"] = rec[0]
-                res = scored_movies_df_50.sort_values(["Recommendation Score"], ascending=False).head(20)
+                movies_df_50 = merged_df[merged_df['UserID'] == merged_df['UserID'].iloc[v]]
+                merged_df_50 = scored_movies_df_50.merge(movies_df_50, on='MovieID', how='outer')
+                merged_df_50 = merged_df_50.drop('List Index_y', axis=1).drop('UserID', axis=1)
+                res = merged_df_50.sort_values(['Recommendation Score'], ascending=False).head(20)
 
 
     return render_template('view.html', recommendation = [res.to_html(classes='tab')], title = titles)
